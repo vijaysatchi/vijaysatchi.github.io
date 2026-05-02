@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vijay Satchi · Spring Boot Backend Portfolio</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background: white;
+      color: #1e2a3a;
+      line-height: 1.5;
+    }
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      background: white;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 0.8rem 1rem;
+      z-index: 10;
+      backdrop-filter: blur(2px);
+    }
+
+    .nav-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      gap: 2.5rem;
+    }
+
+    .nav-container a {
+      text-decoration: none;
+      color: #2c3e50;
+      font-weight: 500;
+      font-size: 0.95rem;
+      padding: 0.25rem 0;
+      transition: color 0.2s;
+    }
+
+    .nav-container a:hover {
+      color: #0d9488;
+      border-bottom: 2px solid #0d9488;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      background: white;
+    }
+
+    /* profile section */
+    .profile-area {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      align-items: center;
+      border-bottom: 1px solid #e9edf2;
+      padding-bottom: 2rem;
+    }
+
+    .photo-placeholder {
+      width: 120px;
+      height: 120px;
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #5a6e7c;
+      font-size: 0.8rem;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .profile-photo {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;   /* THIS makes it fill the circle properly */
+      border: 1px solid #e2e8f0;
+      flex-shrink: 0;
+    }
+
+    .intro-text h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+      color: #0f2b3d;
+    }
+
+    .intro-text .tagline {
+      font-size: 1.1rem;
+      color: #2c5f6e;
+      background: #ecfdf5;
+      display: inline-block;
+      padding: 0.2rem 0.8rem;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+
+    .intro-text p {
+      margin-top: 0.75rem;
+      color: #2d3e50;
+    }
+
+    /* overview grid */
+    .overview-grid {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 1rem 1.2rem;
+      margin: 2rem 0;
+      align-items: start;
+    }
+
+    .overview-label {
+      font-weight: 700;
+      color: #0f2b3d;
+      font-size: 0.95rem;
+      padding-left: 0.5rem;
+      border-left: 2px solid #cbd5e1;
+    }
+
+    .overview-desc {
+      color: #2c3e50;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 650px) {
+      .overview-grid {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+      }
+      .overview-label {
+        border-left: none;
+        padding-left: 0;
+        margin-bottom: 0.1rem;
+      }
+    }
+
+    /* skills section */
+    .skills-section {
+      margin: 2rem 0;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      border-left: 4px solid #2c5f6e;
+      padding-left: 0.75rem;
+      margin-bottom: 1.25rem;
+      color: #1e2a3a;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+
+    .skill-card {
+      background: #f9fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      padding: 1rem;
+    }
+
+    .skill-category {
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .skill-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .skill-badge {
+      background: white;
+      border: 1px solid #cbd5e1;
+      padding: 0.2rem 0.7rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+    }
+
+    /* projects grid + refined media handling */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1.5rem;
+      margin: 1.5rem 0 2rem;
+    }
+
+    .project-card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: box-shadow 0.2s ease, transform 0.1s ease;
+    }
+
+    .project-card:hover {
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.03), 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .card-content {
+      padding: 1rem 1.2rem 1.2rem;
+    }
+
+    .project-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    /* NEW unified media container: no background, clean separation */
+    .project-media {
+      margin: 0.75rem 0 0.9rem 0;
+    }
+
+    /* actual image styling — seamless, modern, no extra background */
+    .project-img {
+      display: block;
+      width: 100%;
+      border-radius: 0.5rem;
+      border: 1px solid #e9edf2;
+      object-fit: cover;
+      aspect-ratio: 16 / 9;
+      background-color: #fefefe;
+      transition: transform 0.2s ease, box-shadow 0.2s;
+      cursor: pointer;
+    }
+
+    .project-img:hover {
+      transform: scale(1.01);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    /* optional placeholder (only for projects without real image) */
+    .project-placeholder {
+      background: #f9fafb;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      text-align: center;
+      color: #3b5c6e;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      min-height: 112px;
+      backdrop-filter: blur(2px);
+      font-weight: 450;
+    }
+
+    .project-placeholder span:first-child {
+      font-size: 1.2rem;
+    }
+
+    .one-liner {
+      font-weight: 500;
+      font-size: 0.85rem;
+      color: #2c5f6e;
+      margin-bottom: 0.8rem;
+      background: #f8fafc;
+      padding: 0.2rem 0;
+    }
+
+    .features-list {
+      list-style: none;
+      margin: 0.8rem 0;
+    }
+
+    .features-list li {
+      font-size: 0.85rem;
+      margin-bottom: 0.4rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.4rem;
+    }
+
+    .tech-stack {
+      background: #f9fafb;
+      font-size: 0.75rem;
+      padding: 0.5rem;
+      border-radius: 0.3rem;
+      margin: 0.6rem 0;
+      border: 1px solid #eef2ff;
+      font-family: monospace;
+    }
+
+    .project-links {
+      display: flex;
+      gap: 1.2rem;
+      margin-top: 0.6rem;
+    }
+
+    .project-links a,
+    .link-disabled {
+      font-size: 0.8rem;
+      text-decoration: none;
+    }
+
+    .project-links a {
+      color: #2563eb;
+      font-weight: 500;
+    }
+
+    .project-links a:hover {
+      text-decoration: underline;
+      color: #0f67b3;
+    }
+
+    .link-disabled {
+      color: #94a3b8;
+    }
+
+    /* contact section */
+    .contact {
+      margin: 2rem 0 1rem;
+      padding: 1.5rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.75rem;
+      text-align: center;
+      background: white;
+    }
+
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.8rem;
+    }
+
+    .contact-links a {
+      text-decoration: none;
+      color: #1e293b;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .contact-links a:hover {
+      color: #0d9488;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: #5a6e7c;
+      margin-top: 2rem;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 1rem;
+    }
+
+    /* tiny responsive polish */
+    @media (max-width: 480px) {
+      .project-title {
+        font-size: 1.1rem;
+      }
+      .card-content {
+        padding: 0.8rem 1rem 1rem;
+      }
+      .project-placeholder {
+        min-height: 90px;
+        font-size: 0.75rem;
+      }
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+    }
+
+    .modal-content {
+      position: relative;
+      z-index: 2;
+      max-width: 90%;
+      max-height: 90%;
+    }
+
+    .modal-content img {
+      width: 100%;
+      max-height: 85vh;
+      border-radius: 0.5rem;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: -12px;
+      right: -12px;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: bold;
+      background: white;
+    }
+
+  </style>
+</head>
+<body>
+<div id="about"></div>
+
+<!-- Navigation -->
+<div class="navbar">
+  <div class="nav-container">
+    <a href="#about">About</a>
+    <a href="#skills">Skills</a>
+    <a href="#projects">Projects</a>
+    <a href="#contact">Contact</a>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Profile + intro -->
+  <div class="profile-area">
+<div style="width:120px; height:120px; border-radius:50%; overflow:hidden; flex-shrink:0;">
+    <img src="images/pfp.png" class="profile-photo" alt="profile photo"  style="filter: brightness(1.15) contrast(1.1); transform:scale(1.2);">
+</div>
+    <div class="intro-text">
+      <h1>Hi, I'm Vijay</h1>
+      <div class="tagline">Spring Boot backend developer</div>
+      <p>Building reliable backend systems with Java, clean APIs, and efficient database design.<br>
+      Passionate about scalable architecture, authentication flows, and writing maintainable backend code.</p>
+    </div>
+  </div>
+
+  <!-- Overview -->
+  <div class="overview-grid">
+    <div class="overview-label">🚀 Backend focus</div>
+    <div class="overview-desc">Specialized in Java & Spring Boot, building maintainable, high-performance systems with strong API design & error handling.</div>
+    
+    <div class="overview-label">⚙️ Core fundamentals</div>
+    <div class="overview-desc">Proven experience in REST API design, validation, exception handling, JPA/Hibernate & transaction management.</div>
+    
+    <div class="overview-label">🔐 Security & auth</div>
+    <div class="overview-desc">Implemented JWT access/refresh tokens with Spring Security, cookie storage, and token rotation patterns.</div>
+    
+    <div class="overview-label">🎯 Career goal</div>
+    <div class="overview-desc">Seeking a backend/Spring Boot engineering role to contribute to production systems and grow as a software crafter.</div>
+  </div>
+
+  <!-- Skills Section -->
+  <div id="skills" class="skills-section">
+    <div class="section-title">Skills</div>
+    <div class="skills-grid">
+      <div class="skill-card">
+        <div class="skill-category"><span>💻</span> Languages</div>
+        <div class="skill-items">
+          <span class="skill-badge">Java</span>
+          <span class="skill-badge">SQL</span>
+          <span class="skill-badge">JavaScript</span>
+          <span class="skill-badge">Python</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-category"><span>⚙️</span> Backend & Frameworks</div>
+        <div class="skill-items">
+          <span class="skill-badge">Spring Boot</span>
+          <span class="skill-badge">Spring Security</span>
+          <span class="skill-badge">REST APIs</span>
+          <span class="skill-badge">JPA/Hibernate</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-category"><span>🗃️</span> Databases</div>
+        <div class="skill-items">
+          <span class="skill-badge">PostgreSQL</span>
+          <span class="skill-badge">MySQL</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-category"><span>🛠️</span> Infra & Tools</div>
+        <div class="skill-items">
+          <span class="skill-badge">Docker</span>
+          <span class="skill-badge">Kubernetes</span>
+          <span class="skill-badge">GCP</span>
+          <span class="skill-badge">Git</span>
+          <span class="skill-badge">Linux</span>
+          <span class="skill-badge">JUnit/TestNG</span>
+          <span class="skill-badge">Selenium</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Projects section -->
+  <div id="projects">
+    <div class="section-title">Backend projects</div>
+    <div class="projects-grid">
+      
+      <!-- Nanba project -->
+      <div class="project-card">
+        <div class="card-content">
+          <div class="project-title"><span>👥</span> Nanba — Social Media Backend</div>
+          
+          <div class="project-media">
+            <img class="project-img" 
+                 src="images/nanba.png" 
+                 alt="Nanba global feed page"
+                 onerror="this.onerror=null; this.src='https://placehold.co/600x338/e2e8f0/2c5f6e?text=Nanba+Global+Feed'; this.style.objectFit='cover';" onclick="openModal(this.src)">
+          </div>
+          
+          <div class="one-liner">Spring Boot backend for social feeds with JWT auth and relational data modeling.</div>
+          <ul class="features-list">
+            <li>🔹 JWT auth with access+refresh tokens stored in cookies</li>
+            <li>🔹 Pagination for feeds, followers & social graph</li>
+            <li>🔹 JOIN-based feed query for followed users' posts</li>
+            <li>🔹 Mutual follow detection system</li>
+          </ul>
+          <div class="tech-stack"><strong>Tech:</strong> Java, Spring Boot, PostgreSQL, Flyway, JWT</div>
+          <div class="project-links">
+            <a href="https://github.com/vijaysatchi/spring-boot-social-media-api" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://nanba.up.railway.app/" target="_blank" rel="noopener">Demo</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Restaurant Management -->
+      <div class="project-card">
+        <div class="card-content">
+          <div class="project-title"><span>☁️</span> Restaurant Management — Microservices</div>
+          
+          <div class="project-media">
+            <img class="project-img" 
+                 src="images/restaurantmanagement.png" 
+                 alt="Restaurant management website frontend interface"
+                 onerror="this.onerror=null; this.src='https://placehold.co/600x338/e2e8f0/2c5f6e?text=Restaurant+UI+Preview'; this.style.objectFit='cover';" onclick="openModal(this.src)">
+          </div>
+          
+          <div class="one-liner">Distributed backend on Kubernetes – 5 services + REST & message queues.</div>
+          <ul class="features-list">
+            <li>🔹 Multi‑service architecture (backend, DB, frontend)</li>
+            <li>🔹 REST + KubeMQ inter‑service communication</li>
+            <li>🔹 Deployed on GCP with Kubernetes</li>
+            <li>🔹 Containerized with Docker</li>
+          </ul>
+          <div class="tech-stack"><strong>Tech:</strong> Java, Kubernetes, GCP, PostgreSQL, KubeMQ, Docker</div>
+          <div class="project-links">
+            <a href="https://github.com/vijaysatchi/Website-Restaurant-Management" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- TMUsic card -->
+      <div class="project-card">
+        <div class="card-content">
+          <div class="project-title"><span>🎵</span> TMUsic — Social Music Platform</div>
+          
+	<div class="project-media">
+            <img class="project-img" 
+                 src="images/tmusic.png" 
+                 alt="TMusic main page with example inputs"
+                 onerror="this.onerror=null; this.src='https://placehold.co/600x338/e2e8f0/2c5f6e?text=Tmusic+UI+Preview'; this.style.objectFit='cover';" onclick="openModal(this.src)">
+          </div>
+          
+          <div class="one-liner">Spotify API + Google OAuth, shared music experiences.</div>
+          <ul class="features-list">
+            <li>🔹 Spotify API integration for music data</li>
+            <li>🔹 Google OAuth authentication</li>
+            <li>🔹 Client‑side routing & state optimization</li>
+            <li>🔹 Team of 9 developers</li>
+          </ul>
+          <div class="tech-stack"><strong>Tech:</strong> JavaScript, React, Spotify API, Google OAuth</div>
+          <div class="project-links">
+            <a href="https://github.com/vijaysatchi/tmu-music" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL -->
+<div class="modal" id="imgModal">
+  <div class="modal-overlay" onclick="closeModal()"></div>
+
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <img id="modalImg" src="">
+  </div>
+</div>
+
+  <!-- Contact Section -->
+  <div id="contact" class="contact">
+    <p><strong>📬 Let’s connect</strong> — I'm open to backend / Spring Boot roles</p>
+    <div class="contact-links">
+      <a href="mailto:vijaysatchi.dev@gmail.com">📧 vijaysatchi.dev@gmail.com</a>
+      <a href="https://github.com/vijaysatchi" target="_blank" rel="noopener">🐙 GitHub</a>
+      <a href="https://www.linkedin.com/in/vijay-satchi/" target="_blank" rel="noopener">🔗 LinkedIn</a>
+    </div>
+    <p style="margin-top: 1rem; font-size: 0.8rem;">📄 Full resume available on request</p>
+  </div>
+
+  <footer>
+    Spring Boot Portfolio — clean, backend‑first, ready for job applications
+  </footer>
+</div>
+<script>
+  function openModal(src) {
+    document.getElementById("modalImg").src = src;
+    document.getElementById("imgModal").classList.add("active");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeModal() {
+    document.getElementById("imgModal").classList.remove("active");
+    document.body.style.overflow = "auto";
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeModal();
+  });
+</script>
+</body>
+</html>
